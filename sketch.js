@@ -80,16 +80,16 @@ function preload() {
   BalooThambi2 = loadFont("BalooThambi2.ttf");
 }
 
-function keyPressed() {
-  //getting hand positions
-  console.log(hands);
-}
+// function keyPressed() {
+//   //getting hand positions
+//   console.log(hands);
+// }
 
-function mousePressed() {
-  //for developing only
-  // sceneNum++;
-  console.log(mouseX, mouseY);
-}
+// function mousePressed() {
+//   //for developing only
+//   // sceneNum++;
+//   console.log(mouseX, mouseY);
+// }
 
 // function keyPressed(){
 //  //for developing only
