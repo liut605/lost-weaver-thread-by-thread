@@ -102,7 +102,7 @@ function gotHands(results) {
 
 function setup() {
   createCanvas(window.innerWidth, window.innerWidth * 0.75);
-  //document.body.style.cursor = "none";
+  document.body.style.cursor = "none";
   spider = new Spider(180, 240);
 
   video = createCapture(VIDEO, { flipped: true });
@@ -154,7 +154,7 @@ function draw() {
       imageMode(CORNERS);
       image(seeking, 0, 0, window.innerWidth, window.innerHeight);
       if (!spiderMoved) {
-        spider.x = window.innerWidth/2;
+        spider.x = window.innerWidth/2 - 50;
         spider.y = window.innerHeight/2;
       }
       push();
