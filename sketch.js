@@ -154,8 +154,8 @@ function draw() {
       imageMode(CORNERS);
       image(seeking, 0, 0, window.innerWidth, window.innerHeight);
       if (!spiderMoved) {
-        spider.x = window.innerWidth/2 - 50;
-        spider.y = window.innerHeight/2;
+        spider.x = window.innerWidth/2 - 70/1710*window.innerWidth;
+        spider.y = window.innerHeight/2 + 18/874*window.innerHeight;
       }
       push();
       rectMode(LEFT);
