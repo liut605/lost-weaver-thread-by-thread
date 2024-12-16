@@ -1,0 +1,22 @@
+"Step into the delicate world of a spider—a creature burdened by a missing instinct. 
+As the player, you guide this lost weaver, teaching a skill all spiders are destined to master. 
+No keyboard, no mouse—just your hands captured by your webcam.
+Spider's survival hangs by a single thread. Will the dance of your hands weave the threads of hope?"
+
+Enough of the catch for the game. This project is frustraing yet rewarding. A few lessons learned from writing close to a thousand lines of codes:
+1. Assign variables to values. When I switched the mapping of web because edges of the screen was extremely hard for efficient gestural recognition, I spent SO MUCH TIME changing each individual value.(it was a less serious issue when I switched from 600 by 400 pixels to window.innerWidth by window.innerHeight since I had fewer lines of codes). 
+2. A healthy relationship with AI when it comes to coding is to use it for debugging and writing out logic. I try not to directly copy and paste AI-generated codes.
+2. I wrote the entire building anchor points (and the whole web in this level) in one scene. Looking back I would have 
+
+Next steps:
+1. Improve on UI/UX: 
+    - Improve on user feedback of gestural recognition: drastic change such as background shift + audio feedabck
+    - Distinction of narrative vs. instruction
+    - Icons in the corner to remind player of gestural controls
+    - Too close to screen alert (more strenous to interact) and no hand recognized alert
+2. Player as wind (suggested by Xin): I'm exicted about the possibility of the idea because it adds to the fantastical atmosphere, which is also what I love about alternative control
+3. Directional audio (suggested by Xin): use pan() to pan wind audio left or right, so that when it aligns with  
+4. Systematic player incentive / learning: How to allow player to keep using waiting for wind
+5. More user testing
+    - 1 player had a hard time bending their index finger for the duration of the game play --> change calculation method of detecting bent finger?
+    - Most players tend to not switch hands or keep both of their hands up unless being clearly instructed to do the other way
