@@ -89,11 +89,11 @@ function preload() {
 //   console.log(hands);
 // }
 
-// function mousePressed() {
-//   //for developing only
-//   // sceneNum++;
-//   console.log(mouseX, mouseY);
-// }
+function mousePressed() {
+  //for developing only
+  // sceneNum++;
+  console.log(mouseX, mouseY);
+}
 
 // function keyPressed(){
 //  //for developing only
@@ -106,9 +106,7 @@ function gotHands(results) {
 
 function setup() {
   createCanvas(window.innerWidth, window.innerWidth * 0.75);
-  document.body.style.cursor = "none";
-  spider = new Spider(180, 240);
-
+  // document.body.style.cursor = "none";
   video = createCapture(VIDEO, { flipped: true });
   video.size(window.innerWidth, window.innerWidth * 0.75);
   video.hide();
@@ -117,29 +115,40 @@ function setup() {
 
 function draw() {
   background(255);
+  if (frameCount % 10 == 0) {
+    //spider animation
+    if (index < 2) {
+      index++;
+    } else {
+      index = 0;
+    }
+  }
   switch (sceneNum) {
     case 0:
       webTouched();
       spiderTouched();
+      imageMode(CORNERS);
       image(web, 0, 0, window.innerWidth, window.innerHeight);
       stroke(0);
       strokeWeight(0.1);
-      textSize(25);
+      textSize(Math.max((25 / 874) * window.innerHeight, 15));
       textFont(BalooThambi2);
-      push();
       rectMode(CENTER);
       textAlign(CENTER);
       text(
         "Use your dominant hand to interact with me",
         window.innerWidth / 2,
-        window.innerHeight / 2
+        window.innerHeight / 2,
+        window.innerWidth / 3
       );
-      pop();
-
       if (i == 200 || spiderTouched()) {
         spider.fall();
+      } else {
+        spider = new Spider(
+          (234 / 1710) * window.innerWidth,
+          (285 / 874) * window.innerHeight
+        );
       }
-
       if (isWiggling) {
         spider.wiggle();
         wiggleDuration--;
@@ -160,32 +169,67 @@ function draw() {
         spider.x = window.innerWidth / 2 - (70 / 1710) * window.innerWidth;
         spider.y = window.innerHeight / 2 + (18 / 874) * window.innerHeight;
       }
-      push();
       rectMode(LEFT);
       textAlign(LEFT);
       text(
         "I can't keep holding onto other spider webs. I need to learn how to build my own web… a place for myself. Let’s look for a spot for my web. Pinch your fingers to pick me up!",
-        window.innerWidth / 10,
+        window.innerWidth / 4,
         window.innerHeight / 2,
         window.innerWidth / 3
       );
-      pop();
       detectPinch(hand);
-      imageMode(CENTER);
-      image(spiderRightImage[index], spider.x, spider.y, 100, 100);
-      if (frameCount % 10 == 0) {
-        if (index < 2) {
-          index++;
-        } else {
-          index = 0;
-        }
-        if (spider.x >= (window.innerWidth * 3) / 4) {
-          sceneNum = 2;
-        }
+      if (detectPinch(hand)) {
+        imageMode(CENTER);
+        image(
+          spiderRightImage[index],
+          spider.x,
+          spider.y,
+          Math.max(
+            Math.sqrt(
+              ((100 * 100) / (1710 * 874)) *
+                window.innerWidth *
+                window.innerHeight
+            ),
+            70
+          ),
+          Math.max(
+            Math.sqrt(
+              ((100 * 100) / (1710 * 874)) *
+                window.innerWidth *
+                window.innerHeight
+            ),
+            70
+          )
+        );
+      } else {
+        imageMode(CENTER);
+        image(
+          spiderRightImage[0],
+          spider.x,
+          spider.y,
+          Math.max(
+            Math.sqrt(
+              ((100 * 100) / (1710 * 874)) *
+                window.innerWidth *
+                window.innerHeight
+            ),
+            70
+          ),
+          Math.max(
+            Math.sqrt(
+              ((100 * 100) / (1710 * 874)) *
+                window.innerWidth *
+                window.innerHeight
+            ),
+            70
+          )
+        );
+      }
+      if (spider.x >= (window.innerWidth * 3) / 4) {
+        sceneNum = 2;
       }
       break;
     case 2:
-      push();
       imageMode(CENTER);
       image(
         landscape,
@@ -194,7 +238,6 @@ function draw() {
         window.innerWidth,
         window.innerHeight
       );
-      pop();
 
       let isIndexFingerBent = detectBendingIndexFinger(hand);
       if (shootingOnboard && !dying) {
@@ -277,14 +320,27 @@ function draw() {
         spider.x = (226 / 1710) * window.innerWidth;
         spider.y = (158 / 874) * window.innerHeight;
         imageMode(CENTER);
-        image(spiderLeftImage[index], spider.x, spider.y, 100, 100);
-        if (frameCount % 10 == 0) {
-          if (index < 2) {
-            index++;
-          } else {
-            index = 0;
-          }
-        }
+        image(
+          spiderLeftImage[0],
+          spider.x,
+          spider.y,
+          Math.max(
+            Math.sqrt(
+              ((100 * 100) / (1710 * 874)) *
+                window.innerWidth *
+                window.innerHeight
+            ),
+            70
+          ),
+          Math.max(
+            Math.sqrt(
+              ((100 * 100) / (1710 * 874)) *
+                window.innerWidth *
+                window.innerHeight
+            ),
+            70
+          )
+        );
       } else {
         //start moving to the center
         windAligned = false;
@@ -296,44 +352,112 @@ function draw() {
           ) {
             txt =
               "Let’s move to the center of the silk strand and continue weaving our orb web!";
-            imageMode(CENTER);
-            image(
-              spiderRightImage[index],
-              constrain(
-                spider.x,
-                (226 / 1710) * window.innerWidth,
-                (1484 / 1710) * window.innerWidth
-              ),
-              (158 / 874) * window.innerHeight,
-              100,
-              100
-            );
-            if (frameCount % 10 == 0) {
-              if (index < 2) {
-                index++;
-              } else {
-                index = 0;
-              }
+            if (detectPinch(hand)) {
+              imageMode(CENTER);
+              image(
+                spiderRightImage[index],
+                constrain(
+                  spider.x,
+                  (226 / 1710) * window.innerWidth,
+                  (1484 / 1710) * window.innerWidth
+                ),
+                (158 / 874) * window.innerHeight,
+                Math.max(
+                  Math.sqrt(
+                    ((100 * 100) / (1710 * 874)) *
+                      window.innerWidth *
+                      window.innerHeight
+                  ),
+                  70
+                ),
+                Math.max(
+                  Math.sqrt(
+                    ((100 * 100) / (1710 * 874)) *
+                      window.innerWidth *
+                      window.innerHeight
+                  ),
+                  70
+                )
+              );
+            } else {
+              imageMode(CENTER);
+              image(
+                spiderRightImage[0],
+                constrain(
+                  spider.x,
+                  (226 / 1710) * window.innerWidth,
+                  (1484 / 1710) * window.innerWidth
+                ),
+                (158 / 874) * window.innerHeight,
+                Math.max(
+                  Math.sqrt(
+                    ((100 * 100) / (1710 * 874)) *
+                      window.innerWidth *
+                      window.innerHeight
+                  ),
+                  70
+                ),
+                Math.max(
+                  Math.sqrt(
+                    ((100 * 100) / (1710 * 874)) *
+                      window.innerWidth *
+                      window.innerHeight
+                  ),
+                  70
+                )
+              );
             }
           } else if (
             spider.x > window.innerWidth / 2 - 20 &&
             spider.x < window.innerWidth / 2 + 20
           ) {
             //if at center
-            imageMode(CENTER);
-            image(
-              spiderDownImage[index],
-              window.innerWidth / 2,
-              (158 / 874) * window.innerHeight + threadLength2,
-              100,
-              100
-            );
-            if (frameCount % 10 == 0) {
-              if (index < 2) {
-                index++;
-              } else {
-                index = 0;
-              }
+            if (detectPinch(hand)) {
+              imageMode(CENTER);
+              image(
+                spiderDownImage[index],
+                window.innerWidth / 2,
+                (158 / 874) * window.innerHeight + threadLength2,
+                Math.max(
+                  Math.sqrt(
+                    ((100 * 100) / (1710 * 874)) *
+                      window.innerWidth *
+                      window.innerHeight
+                  ),
+                  70
+                ),
+                Math.max(
+                  Math.sqrt(
+                    ((100 * 100) / (1710 * 874)) *
+                      window.innerWidth *
+                      window.innerHeight
+                  ),
+                  70
+                )
+              );
+            } else {
+              imageMode(CENTER);
+              image(
+                spiderDownImage[0],
+                window.innerWidth / 2,
+                (158 / 874) * window.innerHeight + threadLength2,
+                Math.max(
+                  Math.sqrt(
+                    ((100 * 100) / (1710 * 874)) *
+                      window.innerWidth *
+                      window.innerHeight
+                  ),
+                  70
+                ),
+                Math.max(
+                  Math.sqrt(
+                    ((100 * 100) / (1710 * 874)) *
+                      window.innerWidth *
+                      window.innerHeight
+                  ),
+                  70
+                )
+              );
             }
             detectBendingIndexFinger(hand);
             if (threadLength2 < ((670 - 158) / 874) * window.innerHeight) {
@@ -403,28 +527,84 @@ function draw() {
             imageMode(CENTER);
             spider.x = window.innerWidth / 2;
             spider.y = (670 / 874) * window.innerHeight;
-            image(spiderUpImage[1], spider.x, spider.y, 100, 100);
+            image(
+              spiderUpImage[0],
+              spider.x,
+              spider.y,
+              Math.max(
+                Math.sqrt(
+                  ((100 * 100) / (1710 * 874)) *
+                    window.innerWidth *
+                    window.innerHeight
+                ),
+                70
+              ),
+              Math.max(
+                Math.sqrt(
+                  ((100 * 100) / (1710 * 874)) *
+                    window.innerWidth *
+                    window.innerHeight
+                ),
+                70
+              )
+            );
           } else {
             //if spider is moved
             if (!diagonalLeft && !dying) {
-              imageMode(CENTER);
-              image(
-                spiderUpImage[index],
-                window.innerWidth / 2,
-                constrain(
-                  spider.y,
-                  (158 / 874) * window.innerHeight + heavedLength,
-                  (670 / 874) * window.innerHeight
-                ),
-                100,
-                100
-              );
-              if (frameCount % 10 == 0) {
-                if (index < 2) {
-                  index++;
-                } else {
-                  index = 0;
-                }
+              if (detectPinch(hand)) {
+                imageMode(CENTER);
+                image(
+                  spiderUpImage[index],
+                  window.innerWidth / 2,
+                  constrain(
+                    spider.y,
+                    (158 / 874) * window.innerHeight + heavedLength,
+                    (670 / 874) * window.innerHeight
+                  ),
+                  Math.max(
+                    Math.sqrt(
+                      ((100 * 100) / (1710 * 874)) *
+                        window.innerWidth *
+                        window.innerHeight
+                    ),
+                    70
+                  ),
+                  Math.max(
+                    Math.sqrt(
+                      ((100 * 100) / (1710 * 874)) *
+                        window.innerWidth *
+                        window.innerHeight
+                    ),
+                    70
+                  )
+                );
+              } else {
+                imageMode(CENTER);
+                image(
+                  spiderUpImage[0],
+                  window.innerWidth / 2,
+                  constrain(
+                    spider.y,
+                    (158 / 874) * window.innerHeight + heavedLength,
+                    (670 / 874) * window.innerHeight
+                  ),
+                  Math.max(
+                    Math.sqrt(
+                      ((100 * 100) / (1710 * 874)) *
+                        window.innerWidth *
+                        window.innerHeight
+                    ),
+                    70
+                  ),
+                  Math.max(
+                    Math.sqrt(
+                      ((100 * 100) / (1710 * 874)) *
+                        window.innerWidth *
+                        window.innerHeight
+                    ),
+                    70
+                  )
+                );
               }
               if (
                 spider.y <=
@@ -445,28 +625,68 @@ function draw() {
                 ((m * 226) / 1710) * window.innerWidth;
               let projectedX = (spider.x + m * (spider.y - b)) / (1 + m * m);
               let projectedY = m * spider.x + b;
-              imageMode(CENTER);
-              image(
-                spiderDiagonalLeftImage[index],
-                constrain(
-                  projectedX,
-                  (226 / 1710) * window.innerWidth,
-                  window.innerWidth / 2
-                ),
-                constrain(
-                  projectedY,
-                  (158 / 874) * window.innerHeight,
-                  (158 / 874) * window.innerHeight + heavedLength
-                ),
-                115,
-                115
-              );
-              if (frameCount % 10 == 0) {
-                if (index < 2) {
-                  index++;
-                } else {
-                  index = 0;
-                }
+              if (detectPinch(hand)) {
+                imageMode(CENTER);
+                image(
+                  spiderDiagonalLeftImage[index],
+                  constrain(
+                    projectedX,
+                    (226 / 1710) * window.innerWidth,
+                    window.innerWidth / 2
+                  ),
+                  constrain(
+                    projectedY,
+                    (158 / 874) * window.innerHeight,
+                    (158 / 874) * window.innerHeight + heavedLength
+                  ),
+                  Math.max(
+                    Math.sqrt(
+                      ((115 * 115) / (1710 * 874)) *
+                        window.innerWidth *
+                        window.innerHeight
+                    ),
+                    80.5
+                  ),
+                  Math.max(
+                    Math.sqrt(
+                      ((115 * 115) / (1710 * 874)) *
+                        window.innerWidth *
+                        window.innerHeight
+                    ),
+                    80.5
+                  )
+                );
+              } else {
+                imageMode(CENTER);
+                image(
+                  spiderDiagonalLeftImage[0],
+                  constrain(
+                    projectedX,
+                    (226 / 1710) * window.innerWidth,
+                    window.innerWidth / 2
+                  ),
+                  constrain(
+                    projectedY,
+                    (158 / 874) * window.innerHeight,
+                    (158 / 874) * window.innerHeight + heavedLength
+                  ),
+                  Math.max(
+                    Math.sqrt(
+                      ((115 * 115) / (1710 * 874)) *
+                        window.innerWidth *
+                        window.innerHeight
+                    ),
+                    80.5
+                  ),
+                  Math.max(
+                    Math.sqrt(
+                      ((115 * 115) / (1710 * 874)) *
+                        window.innerWidth *
+                        window.innerHeight
+                    ),
+                    80.5
+                  )
+                );
               }
               if (projectedX <= (226 / 1710) * window.innerWidth) {
                 //at left anchor
@@ -519,24 +739,60 @@ function draw() {
             txt =
               "Well done! Let's go to the right anchor. I'm sure you will find the shortcut!";
             detectPinch(hand);
-            imageMode(CENTER);
-            image(
-              spiderRightImage[index],
-              constrain(
-                spider.x,
-                (226 / 1710) * window.innerWidth,
-                (1484 / 1710) * window.innerWidth
-              ),
-              (158 / 874) * window.innerHeight,
-              100,
-              100
-            );
-            if (frameCount % 10 == 0) {
-              if (index < 2) {
-                index++;
-              } else {
-                index = 0;
-              }
+            if (detectPinch(hand)) {
+              imageMode(CENTER);
+              image(
+                spiderRightImage[index],
+                constrain(
+                  spider.x,
+                  (226 / 1710) * window.innerWidth,
+                  (1484 / 1710) * window.innerWidth
+                ),
+                (158 / 874) * window.innerHeight,
+                Math.max(
+                  Math.sqrt(
+                    ((100 * 100) / (1710 * 874)) *
+                      window.innerWidth *
+                      window.innerHeight
+                  ),
+                  70
+                ),
+                Math.max(
+                  Math.sqrt(
+                    ((100 * 100) / (1710 * 874)) *
+                      window.innerWidth *
+                      window.innerHeight
+                  ),
+                  70
+                )
+              );
+            } else {
+              imageMode(CENTER);
+              image(
+                spiderRightImage[0],
+                constrain(
+                  spider.x,
+                  (226 / 1710) * window.innerWidth,
+                  (1484 / 1710) * window.innerWidth
+                ),
+                (158 / 874) * window.innerHeight,
+                Math.max(
+                  Math.sqrt(
+                    ((100 * 100) / (1710 * 874)) *
+                      window.innerWidth *
+                      window.innerHeight
+                  ),
+                  70
+                ),
+                Math.max(
+                  Math.sqrt(
+                    ((100 * 100) / (1710 * 874)) *
+                      window.innerWidth *
+                      window.innerHeight
+                  ),
+                  70
+                )
+              );
             }
           }
 
@@ -574,29 +830,70 @@ function draw() {
           projectedX = (spider.x + m * (spider.y - b)) / (1 + m * m);
           projectedY = m * spider.x + b;
           if (projectedX >= window.innerWidth / 2 + 3) {
-            imageMode(CENTER);
-            image(
-              spiderDiagonalRightImage[index],
-              constrain(
-                projectedX,
-                window.innerWidth / 2,
-                (1484 / 1710) * window.innerWidth
-              ),
-              constrain(
-                projectedY,
-                (158 / 874) * window.innerHeight,
-                (158 / 874) * window.innerHeight + heavedLength
-              ),
-              115,
-              115
-            );
-            if (frameCount % 10 == 0) {
-              if (index < 2) {
-                index++;
-              } else {
-                index = 0;
-              }
+            if (detectPinch(hand)) {
+              imageMode(CENTER);
+              image(
+                spiderDiagonalRightImage[index],
+                constrain(
+                  projectedX,
+                  window.innerWidth / 2,
+                  (1484 / 1710) * window.innerWidth
+                ),
+                constrain(
+                  projectedY,
+                  (158 / 874) * window.innerHeight,
+                  (158 / 874) * window.innerHeight + heavedLength
+                ),
+                Math.max(
+                  Math.sqrt(
+                    ((115 * 115) / (1710 * 874)) *
+                      window.innerWidth *
+                      window.innerHeight
+                  ),
+                  80.5
+                ),
+                Math.max(
+                  Math.sqrt(
+                    ((115 * 115) / (1710 * 874)) *
+                      window.innerWidth *
+                      window.innerHeight
+                  ),
+                  80.5
+                )
+              );
+            } else {
+              imageMode(CENTER);
+              image(
+                spiderDiagonalRightImage[0],
+                constrain(
+                  projectedX,
+                  window.innerWidth / 2,
+                  (1484 / 1710) * window.innerWidth
+                ),
+                constrain(
+                  projectedY,
+                  (158 / 874) * window.innerHeight,
+                  (158 / 874) * window.innerHeight + heavedLength
+                ),
+                Math.max(
+                  Math.sqrt(
+                    ((115 * 115) / (1710 * 874)) *
+                      window.innerWidth *
+                      window.innerHeight
+                  ),
+                  80.5
+                ),
+                Math.max(
+                  Math.sqrt(
+                    ((115 * 115) / (1710 * 874)) *
+                      window.innerWidth *
+                      window.innerHeight
+                  ),
+                  80.5
+                )
+              );
             }
+
             //right anchor thread
             push();
             strokeWeight(1);
@@ -626,14 +923,27 @@ function draw() {
             spider.y = (670 / 874) * window.innerHeight;
             spider.x = window.innerWidth / 2;
             imageMode(CENTER);
-            image(spiderUpImage[index], spider.x, spider.y, 100, 100);
-            if (frameCount % 10 == 0) {
-              if (index < 2) {
-                index++;
-              } else {
-                index = 0;
-              }
-            }
+            image(
+              spiderUpImage[0],
+              spider.x,
+              spider.y,
+              Math.max(
+                Math.sqrt(
+                  ((100 * 100) / (1710 * 874)) *
+                    window.innerWidth *
+                    window.innerHeight
+                ),
+                70
+              ),
+              Math.max(
+                Math.sqrt(
+                  ((100 * 100) / (1710 * 874)) *
+                    window.innerWidth *
+                    window.innerHeight
+                ),
+                70
+              )
+            );
             push();
             strokeWeight(1);
             stroke(0);
@@ -662,25 +972,62 @@ function draw() {
             } else {
               txt = "You are getting so close to the bottom anchor!";
             }
-            imageMode(CENTER);
-            image(
-              spiderDownImage[index],
-              window.innerWidth / 2,
-              constrain(
-                spider.y,
-                (158 / 874) * window.innerHeight + heavedLength,
-                (670 / 874) * window.innerHeight
-              ),
-              100,
-              100
-            );
-            if (frameCount % 10 == 0) {
-              if (index < 2) {
-                index++;
-              } else {
-                index = 0;
-              }
+            if (detectPinch(hand)) {
+              imageMode(CENTER);
+              image(
+                spiderDownImage[index],
+                window.innerWidth / 2,
+                constrain(
+                  spider.y,
+                  (158 / 874) * window.innerHeight + heavedLength,
+                  (670 / 874) * window.innerHeight
+                ),
+                Math.max(
+                  Math.sqrt(
+                    ((100 * 100) / (1710 * 874)) *
+                      window.innerWidth *
+                      window.innerHeight
+                  ),
+                  70
+                ),
+                Math.max(
+                  Math.sqrt(
+                    ((100 * 100) / (1710 * 874)) *
+                      window.innerWidth *
+                      window.innerHeight
+                  ),
+                  70
+                )
+              );
+            } else {
+              imageMode(CENTER);
+              image(
+                spiderDownImage[0],
+                window.innerWidth / 2,
+                constrain(
+                  spider.y,
+                  (158 / 874) * window.innerHeight + heavedLength,
+                  (670 / 874) * window.innerHeight
+                ),
+                Math.max(
+                  Math.sqrt(
+                    ((100 * 100) / (1710 * 874)) *
+                      window.innerWidth *
+                      window.innerHeight
+                  ),
+                  70
+                ),
+                Math.max(
+                  Math.sqrt(
+                    ((100 * 100) / (1710 * 874)) *
+                      window.innerWidth *
+                      window.innerHeight
+                  ),
+                  70
+                )
+              );
             }
+
             push();
             strokeWeight(1);
             stroke(0);
@@ -716,13 +1063,33 @@ function draw() {
             (158 / 874) * window.innerHeight
           );
           pop();
-
           detectPinch(hand);
+          console.log(detectPinch(hand));
           if (!spiderMoved) {
             spider.x = window.innerWidth / 2;
             spider.y = (670 / 874) * window.innerHeight;
             imageMode(CENTER);
-            image(spiderUpImage[0], spider.x, spider.y, 100, 100);
+            image(
+              spiderUpImage[0],
+              spider.x,
+              spider.y,
+              Math.max(
+                Math.sqrt(
+                  ((100 * 100) / (1710 * 874)) *
+                    window.innerWidth *
+                    window.innerHeight
+                ),
+                70
+              ),
+              Math.max(
+                Math.sqrt(
+                  ((100 * 100) / (1710 * 874)) *
+                    window.innerWidth *
+                    window.innerHeight
+                ),
+                70
+              )
+            );
           } else {
             if (
               spider.y > (158 / 874) * window.innerHeight + heavedLength + 5 &&
@@ -740,6 +1107,8 @@ function draw() {
                 if (millis() - previousMillis >= 2000) {
                   txt = "I have to try harder.";
                 }
+              }
+              if (detectPinch(hand)) {
                 imageMode(CENTER);
                 image(
                   spiderUpImage[index],
@@ -753,16 +1122,54 @@ function draw() {
                     (158 / 874) * window.innerHeight + heavedLength,
                     (670 / 874) * window.innerHeight
                   ),
-                  100,
-                  100
+                  Math.max(
+                    Math.sqrt(
+                      ((100 * 100) / (1710 * 874)) *
+                        window.innerWidth *
+                        window.innerHeight
+                    ),
+                    70
+                  ),
+                  Math.max(
+                    Math.sqrt(
+                      ((100 * 100) / (1710 * 874)) *
+                        window.innerWidth *
+                        window.innerHeight
+                    ),
+                    70
+                  )
                 );
-                if (frameCount % 10 == 0) {
-                  if (index < 2) {
-                    index++;
-                  } else {
-                    index = 0;
-                  }
-                }
+              } else {
+                imageMode(CENTER);
+                image(
+                  spiderUpImage[0],
+                  constrain(
+                    spider.x,
+                    window.innerWidth / 2,
+                    window.innerWidth / 2
+                  ),
+                  constrain(
+                    spider.y,
+                    (158 / 874) * window.innerHeight + heavedLength,
+                    (670 / 874) * window.innerHeight
+                  ),
+                  Math.max(
+                    Math.sqrt(
+                      ((100 * 100) / (1710 * 874)) *
+                        window.innerWidth *
+                        window.innerHeight
+                    ),
+                    70
+                  ),
+                  Math.max(
+                    Math.sqrt(
+                      ((100 * 100) / (1710 * 874)) *
+                        window.innerWidth *
+                        window.innerHeight
+                    ),
+                    70
+                  )
+                );
               }
             } else if (
               spider.y <=
@@ -774,7 +1181,27 @@ function draw() {
               spider.x = window.innerWidth / 2;
               spider.y = (158 / 874) * window.innerHeight + heavedLength;
               imageMode(CENTER);
-              image(spiderUpImage[0], spider.x, spider.y, 100, 100);
+              image(
+                spiderUpImage[0],
+                spider.x,
+                spider.y,
+                Math.max(
+                  Math.sqrt(
+                    ((100 * 100) / (1710 * 874)) *
+                      window.innerWidth *
+                      window.innerHeight
+                  ),
+                  70
+                ),
+                Math.max(
+                  Math.sqrt(
+                    ((100 * 100) / (1710 * 874)) *
+                      window.innerWidth *
+                      window.innerHeight
+                  ),
+                  70
+                )
+              );
               txt = "I'm stuck in my own web.";
               if (!secondTextBlock5) {
                 previousMillis = millis();
@@ -814,6 +1241,7 @@ function draw() {
             }
           }
         }
+
         //heaved threads
         push();
         strokeWeight(1);
@@ -856,28 +1284,22 @@ function draw() {
         (73 / 874) * window.innerHeight,
         window.innerWidth * 0.62
       );
-      // text(
-      //   txt,
-      //   553/1710*window.innerWidth + window.innerWidth * .2,
-      //   303/874*window.innerHeight,
-      //   window.innerWidth * .4
-      // );
       break;
     case 3:
-      txt = "Blink to see more clearly.";
       background(0);
-      stroke(255);
-      strokeWeight(0.1);
-      textAlign(LEFT);
-      textFont(BalooThambi2);
-      textSize(25);
-      rectMode(CENTER);
-      text(
-        txt,
-        window.innerWidth / 2,
-        window.innerHeight / 2,
-        (window.innerWidth * 3) / 4
-      );
+    // txt = "Blink to see more clearly.";
+    // stroke(255);
+    // strokeWeight(0.1);
+    // textAlign(LEFT);
+    // textFont(BalooThambi2);
+    // textSize(Math.max((25 / 874) * window.innerHeight, 15));
+    // rectMode(CENTER);
+    // text(
+    //   txt,
+    //   window.innerWidth / 2,
+    //   window.innerHeight / 2,
+    //   (window.innerWidth * 3) / 4
+    // );
   }
 }
 
@@ -888,42 +1310,69 @@ class Spider {
   }
 
   body() {
-    if (frameCount % 10 == 0) {
-      if (index < 2) {
-        index++;
-      } else {
-        index = 0;
-      }
-    }
-    spiderUpImage[index].resize(100, 100);
-    //imageMode(CENTER);
-    image(spiderUpImage[index], this.x, this.y);
+    imageMode(CENTER);
+    image(
+      spiderUpImage[0],
+      this.x,
+      this.y,
+      Math.max(
+        Math.sqrt(
+          ((100 * 100) / (1710 * 874)) * window.innerWidth * window.innerHeight
+        ),
+        70
+      ),
+      Math.max(
+        Math.sqrt(
+          ((100 * 100) / (1710 * 874)) * window.innerWidth * window.innerHeight
+        ),
+        70
+      )
+    );
   }
 
   wiggle() {
     let wiggleOffsetX = (noise(frameCount * 0.05) - 0.5) * 20; // amplitude=20
     let wiggleOffsetY = (noise(frameCount * 0.05 + 1000) - 0.5) * 20;
-
-    image(spiderUpImage[index], this.x + wiggleOffsetX, this.y + wiggleOffsetY);
-    if (frameCount % 10 == 0) {
-      if (index < 2) {
-        index++;
-      } else {
-        index = 0;
-      }
-    }
+    imageMode(CENTER);
+    image(
+      spiderUpImage[index],
+      this.x + wiggleOffsetX,
+      this.y + wiggleOffsetY,
+      Math.max(
+        Math.sqrt(
+          ((100 * 100) / (1710 * 874)) * window.innerWidth * window.innerHeight
+        ),
+        70
+      ),
+      Math.max(
+        Math.sqrt(
+          ((100 * 100) / (1710 * 874)) * window.innerWidth * window.innerHeight
+        ),
+        70
+      )
+    );
   }
 
   fall() {
+    imageMode(CENTER);
+    image(
+      spiderUpImage[index],
+      this.x,
+      this.y,
+      Math.max(
+        Math.sqrt(
+          ((100 * 100) / (1710 * 874)) * window.innerWidth * window.innerHeight
+        ),
+        70
+      ),
+      Math.max(
+        Math.sqrt(
+          ((100 * 100) / (1710 * 874)) * window.innerWidth * window.innerHeight
+        ),
+        70
+      )
+    );
     this.y += 8;
-    image(spiderUpImage[index], this.x, this.y);
-    if (frameCount % 10 == 0) {
-      if (index < 2) {
-        index++;
-      } else {
-        index = 0;
-      }
-    }
   }
 }
 
@@ -1020,22 +1469,35 @@ function detectPinch(hand) {
         );
         if (d <= 65 && (distToIndex <= 65 || distToThumb <= 65)) {
           let currentTime = millis();
+          console.log(
+            currentTime,
+            lastUpdateTime,
+            currentTime - lastUpdateTime
+          );
+          // console.log(
+          //   moveToLeftAnchor,
+          //   moveToBottomAnchor,
+          //   diagonalRight,
+          //   detectBendingIndexFinger(hand)
+          // );
           if (!dying || currentTime - lastUpdateTime >= dyingUpdateInterval) {
-            if (moveToLeftAnchor || moveToBottomAnchor || diagonalRight) {
-              if (detectBendingIndexFinger(hand)) {
-                spider.x = (hand.index_finger_tip.x + hand.thumb_tip.x) / 2;
-                spider.y = (hand.index_finger_tip.y + hand.thumb_tip.y) / 2;
-                spiderMoved = true;
-                lastUpdateTime = currentTime;
-                return true;
-              }
+            if (
+              (moveToLeftAnchor || moveToBottomAnchor || diagonalRight) &&
+              detectBendingIndexFinger(hand)
+            ) {
+              // console.log("All conditions met, updating spider position.");
+              spider.x = (hand.index_finger_tip.x + hand.thumb_tip.x) / 2;
+              spider.y = (hand.index_finger_tip.y + hand.thumb_tip.y) / 2;
+              spiderMoved = true;
+              lastUpdateTime = currentTime;
+              return true;
             }
           }
           if (!moveToLeftAnchor && !moveToBottomAnchor && !diagonalRight) {
             spider.x = (hand.index_finger_tip.x + hand.thumb_tip.x) / 2;
             spider.y = (hand.index_finger_tip.y + hand.thumb_tip.y) / 2;
             spiderMoved = true;
-            lastUpdateTime = currentTime;
+            //lastUpdateTime = currentTime;
             return true;
           }
 
@@ -1043,7 +1505,7 @@ function detectPinch(hand) {
             spider.x = (hand.index_finger_tip.x + hand.thumb_tip.x) / 2;
             spider.y = (hand.index_finger_tip.y + hand.thumb_tip.y) / 2;
             spiderMoved = true;
-            lastUpdateTime = currentTime;
+            //lastUpdateTime = currentTime;
             return true;
           }
         }
