@@ -31,10 +31,13 @@ let hands = [];
 let hand;
 let domHand;
 let nonDomHand;
+let bending_index_figer_left;
+let bending_index_figer_right;
 
 let BalooThambi2;
 let Gluten;
 let txt;
+let instruction;
 let secondTextBlock1 = false;
 let stubborn = false;
 let secondTextBlock2 = false;
@@ -62,6 +65,9 @@ let secondTextBlock5 = false;
 let lastUpdateTime = 0;
 let dyingUpdateInterval = 500;
 
+let threadStartingPos =
+  window.innerWidth / 2 - (226 / 1710) * window.innerWidth;
+
 function preload() {
   for (let i = 0; i < 3; i++) {
     spiderUpImage[i] = loadImage("spider_up_" + i + ".png");
@@ -78,6 +84,14 @@ function preload() {
   web = loadImage("web.png");
   landscape = loadImage("background.png");
   seeking = loadImage("seeking.png");
+  thumb = loadImage("thumb.png");
+  index_finger = loadImage("index_finger.png");
+  non_dom_hand = loadImage("non_dom_hand.png");
+  bending_index_figer_left = loadImage("bending_index_finger_left.png");
+  bending_index_figer_right = loadImage("bending_index_finger_right.png");
+  pinch_left = loadImage("pinch_left.png");
+  pinch_right = loadImage("pinch_right.png");
+
   handPose = ml5.handPose({ flipped: true });
   wind = loadSound("wind.mp3");
   gluten = loadFont("Gluten.ttf");
@@ -89,11 +103,11 @@ function preload() {
 //   console.log(hands);
 // }
 
-function mousePressed() {
-  //for developing only
-  // sceneNum++;
-  console.log(mouseX, mouseY);
-}
+// function mousePressed() {
+//   //for developing only
+//   // sceneNum++;
+//   console.log(mouseX, mouseY);
+// }
 
 // function keyPressed(){
 //  //for developing only
@@ -106,7 +120,7 @@ function gotHands(results) {
 
 function setup() {
   createCanvas(window.innerWidth, window.innerWidth * 0.75);
-  // document.body.style.cursor = "none";
+  document.body.style.cursor = "none";
   video = createCapture(VIDEO, { flipped: true });
   video.size(window.innerWidth, window.innerWidth * 0.75);
   video.hide();
@@ -167,16 +181,46 @@ function draw() {
       image(seeking, 0, 0, window.innerWidth, window.innerHeight);
       if (!spiderMoved) {
         spider.x = window.innerWidth / 2 - (70 / 1710) * window.innerWidth;
-        spider.y = window.innerHeight / 2 + (18 / 874) * window.innerHeight;
+        spider.y = window.innerHeight / 2 + (170 / 874) * window.innerHeight;
       }
-      rectMode(LEFT);
+      rectMode(CENTER);
       textAlign(LEFT);
+      stroke(0);
+      strokeWeight(0.1);
+      textSize(Math.max((25 / 874) * window.innerHeight, 15));
       text(
-        "I can't keep holding onto other spider webs. I need to learn how to build my own web… a place for myself. Let’s look for a spot for my web. Pinch your fingers to pick me up!",
-        window.innerWidth / 4,
-        window.innerHeight / 2,
-        window.innerWidth / 3
+        "I can't keep holding onto other spider webs. I need to learn how to build my own web… a place for myself. Follow the windscape…",
+        window.innerWidth * 0.15,
+        window.innerHeight * 0.5,
+        window.innerWidth * 0.25
       );
+      push();
+      textSize(Math.max((15 / 874) * window.innerHeight, 15));
+      text(
+        "Will you pinch your fingers and pick me up?",
+        window.innerWidth * 0.15,
+        window.innerHeight * 0.75,
+        window.innerWidth * 0.25
+      );
+      pop();
+      imageMode(CENTER);
+      if (domHand === "Left") {
+        image(
+          pinch_left,
+          window.innerWidth / 4,
+          (window.innerHeight / 4) * 3,
+          100,
+          100
+        );
+      } else {
+        image(
+          pinch_right,
+          window.innerWidth / 4,
+          (window.innerHeight / 4) * 3,
+          100,
+          100
+        );
+      }
       detectPinch(hand);
       if (detectPinch(hand)) {
         imageMode(CENTER);
@@ -241,43 +285,90 @@ function draw() {
 
       let isIndexFingerBent = detectBendingIndexFinger(hand);
       if (shootingOnboard && !dying) {
-        if (isIndexFingerBent) {
-          if (
-            threadLength1 <
-            window.innerWidth / 2 - (226 / 1710) * window.innerWidth
-          ) {
-            threadLength1 += 4;
-            txt =
-              "The gap in between the branches looks like a perfect spot for my web! Spider silk requires both strength and elasticity. We will start with the stronger silk to build the anchor points & support threads. Bend the index finger of your non-dominant hand to shoot spider silk.";
-            blownAway = false;
-          } else {
-            txt =
-              "It seems that the wind isn’t in our favor! Straighten your index finger to stop shooting.";
-            blownAway = true;
-          }
+        instruction =
+          "Bend index finger to shoot a thread. Straighten it to stop.";
+        if (domHand === "Right") {
+          image(
+            bending_index_figer_left,
+            window.innerWidth * 0.295,
+            window.innerHeight * 0.925,
+            100,
+            100
+          );
         }
-        if (!isIndexFingerBent) {
-          if (threadLength1 > 0) {
-            threadLength1 -= 4;
-            txt =
-              "It seems that the wind isn’t in our favor! Straighten your index finger to stop shooting.";
+        if (domHand === "Left") {
+          image(
+            bending_index_figer_right,
+            window.innerWidth * 0.295,
+            window.innerHeight * 0.925,
+            100,
+            100
+          );
+        }
+
+        if (!blownAway) {
+          // console.log(threadLength1, threadStartingPos);
+          txt =
+            "This could the starting point for my web! Spider silk requires both strength and elasticity. I will start with the stronger silk to build the anchor points & support threads. Will you be here with me?";
+          if (threadLength1 < threadStartingPos) {
+            if (isIndexFingerBent) {
+              // console.log("shooting");
+              threadLength1 += 4;
+            } else {
+              if (threadLength1 > 0) {
+                threadLength1 -= 4;
+                // console.log("released");
+              }
+            }
+          } else if (threadLength1 >= threadStartingPos) {
+            // console.log("blownaway");
+            threadLength1 = threadStartingPos - 1;
             blownAway = true;
           }
-          if (threadLength1 == 0) {
-            if (blownAway) {
-              txt =
-                "Now wait for the wind direction to align so that the breeze can take up the thread. Start shooting silk again to reach the other side.";
-              shootingOnboard = false;
+        } else {
+          // console.log(threadLength1, threadStartingPos);
+          txt = "Nice try, but it seems that the windscape isn’t in our favor!";
+          if (threadLength1 > 0 && threadLength1 < threadStartingPos) {
+            if (isIndexFingerBent && threadLength1 <= threadStartingPos - 4) {
+              threadLength1 += 4;
+              // console.log("post - shooting");
             } else {
-              txt =
-                "The gap in between the branches looks like a perfect spot for my web! Spider silk requires both strength and elasticity. We will start with the stronger silk to build the anchor points & support threads. Bend the index finger of your non-dominant hand to shoot spider silk.";
+              threadLength1 -= 4;
+              // console.log("post - released");
             }
           }
+          if (threadLength1 <= 0) {
+            txt =
+              "Now listen to the alignment of windscape so that the wind can take up the thread. Start shooting silk again to reach the other side.";
+            shootingOnboard = false;
+            // console.log(shootingOnboard);
+          }
         }
-      } else {
-        if (second() % 8 == 0 && threadLength1 == 0) {
+      } else if (!shootingOnboard && !moveToCenter) {
+        instruction =
+          "Bend index finger to shoot spider silk. Straighten it to stop.";
+        if (domHand === "Right") {
+          image(
+            bending_index_figer_left,
+            window.innerWidth * 0.295,
+            window.innerHeight * 0.925,
+            100,
+            100
+          );
+        }
+        if (domHand === "Left") {
+          image(
+            bending_index_figer_right,
+            window.innerWidth * 0.295,
+            window.innerHeight * 0.925,
+            100,
+            100
+          );
+        }
+        if (second() % 8 == 0 && threadLength1 <= 0) {
           wind.play();
           windAligned = true;
+          // console.log("aligned");
         }
         if (windAligned && isIndexFingerBent) {
           if (
@@ -291,16 +382,18 @@ function draw() {
             txt =
               "We just successfully bridged the gap! Let’s move to the center of the silk strand and continue weaving our orb web!";
             moveToCenter = true;
+            // console.log("aligned, shooting");
           }
         }
         if (windAligned && !isIndexFingerBent && !moveToCenter) {
           txt =
-            "You missed the wind! Remember to wait for the wind direction to align.";
+            "You missed it! Remember to listen to the alignment of windscape.";
           if (threadLength1 > 0) {
             threadLength1 -= 4;
           }
-          if (threadLength1 == 0) {
+          if (threadLength1 <= 0) {
             windAligned = false;
+            // console.log("restart");
           }
         }
       }
@@ -351,7 +444,25 @@ function draw() {
             spider.x > window.innerWidth / 2 + 20
           ) {
             txt =
-              "Let’s move to the center of the silk strand and continue weaving our orb web!";
+              "We just successfully bridged the gap! Let’s move to the center of the silk strand and continue weaving our orb web!";
+            instruction = "Pinch your fingers to pick me up.";
+            if (domHand === "Left") {
+              image(
+                pinch_left,
+                window.innerWidth * 0.295,
+                window.innerHeight * 0.925,
+                10,
+                10
+              );
+            } else {
+              image(
+                pinch_right,
+                window.innerWidth * 0.295,
+                window.innerHeight * 0.925,
+                100,
+                100
+              );
+            }
             if (detectPinch(hand)) {
               imageMode(CENTER);
               image(
@@ -462,7 +573,27 @@ function draw() {
             detectBendingIndexFinger(hand);
             if (threadLength2 < ((670 - 158) / 874) * window.innerHeight) {
               txt =
-                "Shoot a thread so that we can drop down until we reach something.";
+                "Shoot a thread so that we can drop down until we reach the bottom windscape.";
+              instruction = "Bend index finger to shoot a thread.";
+              if (domHand === "Right") {
+                image(
+                  bending_index_figer_left,
+                  window.innerWidth * 0.295,
+                  window.innerHeight * 0.925,
+                  100,
+                  100
+                );
+              }
+              if (domHand === "Left") {
+                image(
+                  bending_index_figer_right,
+                  window.innerWidth * 0.295,
+                  window.innerHeight * 0.925,
+                  100,
+                  100
+                );
+              }
+
               if (isIndexFingerBent) {
                 threadLength2 += 4;
               }
@@ -475,8 +606,9 @@ function draw() {
                 secondTextBlock1 = true;
               } else {
                 if (millis() - previousMillis >= 2000) {
-                  txt =
-                    "You don't believe me? Make the “cellphone” gesture to listen to the vibration yourself! With your non-dominant hand!";
+                  txt = "You don't believe me?";
+                  instruction =
+                    "Make the “cellphone” gesture to listen to the vibration yourself! With your non-dominant hand!";
                 }
               }
               let cellPhone = detectCellphonePose(hand);
@@ -487,7 +619,9 @@ function draw() {
               }
               if (stubborn) {
                 txt =
-                  "Aren't you stubborn? Cross the fingers of your non-dominant hand to heave the thread. ";
+                  "Aren't you stubborn? I just told you it's a little loose...";
+                instruction =
+                  "Cross the fingers of your non-dominant hand to heave the thread.";
               }
               if (heavedLength <= 100) {
                 if (fingersCrossed) {
@@ -502,8 +636,9 @@ function draw() {
                   secondTextBlock2 = true;
                 } else {
                   if (millis() - previousMillis >= 2000) {
-                    txt =
-                      "Shoot a thread and drag it to the left top anchor. Remember to use both of your hands!";
+                    txt = "Shoot a thread and drag it to the left top anchor.";
+                    instruction =
+                      "Pinch to pick me up. Bend index finger to shoot a thread.";
                     moveToLeftAnchor = true;
                     spiderMoved = false;
                   }
@@ -512,6 +647,7 @@ function draw() {
             }
           }
         } else if (moveToLeftAnchor && !dying) {
+          //no initial icon whyyyyy????????
           //move to left anchor
           if (hands.length > 0) {
             for (let hand of hands) {
@@ -692,6 +828,7 @@ function draw() {
                 //at left anchor
                 txt =
                   "Well done! Let's go to the right anchor. I'm sure you will find the shortcut!";
+                instruction = "Pinch to pick me up.";
                 moveToRightAnchor = true;
               } else if (projectedX > (226 / 1710) * window.innerWidth) {
                 //left anchor thread
@@ -717,12 +854,124 @@ function draw() {
             }
             if (!detectBendingIndexFinger(hand)) {
               txt = "Gotta keep the thread goin'";
+              instruction = "Bend index finger to shoot a thread.";
+              if (domHand === "Right") {
+                if (moveToRightAnchor) {
+                  image(
+                    pinch_right,
+                    window.innerWidth * 0.295,
+                    window.innerHeight * 0.925,
+                    100,
+                    100
+                  );
+                } else {
+                  // console.log("859");
+                  image(
+                    bending_index_figer_left,
+                    window.innerWidth * 0.255,
+                    window.innerHeight * 0.925,
+                    100,
+                    100
+                  );
+                  image(
+                    pinch_right,
+                    window.innerWidth * 0.295,
+                    window.innerHeight * 0.925,
+                    100,
+                    100
+                  );
+                }
+              }
+              if (domHand === "Left") {
+                if (moveToRightAnchor) {
+                  image(
+                    pinch_left,
+                    window.innerWidth * 0.255,
+                    window.innerHeight * 0.925,
+                    100,
+                    100
+                  );
+                } else {
+                  image(
+                    bending_index_figer_right,
+                    window.innerWidth * 0.295,
+                    window.innerHeight * 0.925,
+                    100,
+                    100
+                  );
+                  image(
+                    pinch_left,
+                    window.innerWidth * 0.255,
+                    window.innerHeight * 0.925,
+                    100,
+                    100
+                  );
+                }
+              }
             } else {
               txt = "You are getting so close to the left anchor!";
+              instruction =
+                "Pinch to pick me up. Bend index finger to shoot a thread.";
+              if (!moveToRightAnchor) {
+                if (domHand === "Right") {
+                  image(
+                    bending_index_figer_left,
+                    window.innerWidth * 0.255,
+                    window.innerHeight * 0.925,
+                    100,
+                    100
+                  );
+                  image(
+                    pinch_right,
+                    window.innerWidth * 0.295,
+                    window.innerHeight * 0.925,
+                    100,
+                    100
+                  );
+                } else if (domHand === "Left") {
+                  //an old bug, left display
+                  // console.log("left, 700");
+                  image(
+                    bending_index_figer_right,
+                    window.innerWidth * 0.295,
+                    window.innerHeight * 0.925,
+                    100,
+                    100
+                  );
+                  image(
+                    pinch_left,
+                    window.innerWidth * 0.255,
+                    window.innerHeight * 0.925,
+                    100,
+                    100
+                  );
+                }
+              }
             }
           }
         }
         if (moveToRightAnchor & !dying) {
+          // console.log("moveToRightAnchor", moveToRightAnchor);
+          if (domHand === "Right") {
+            // console.log("right, normal");
+            image(
+              pinch_right,
+              window.innerWidth * 0.295,
+              window.innerHeight * 0.925,
+              100,
+              100
+            );
+          } else if (domHand === "Left") {
+            //an old bug, left display
+            // console.log("left, 1000");
+            image(
+              pinch_left,
+              window.innerWidth * 0.255,
+              window.innerHeight * 0.925,
+              100,
+              100
+            );
+          }
           //unchanged left anchor thread
           push();
           strokeWeight(1);
@@ -738,6 +987,8 @@ function draw() {
           if (!diagonalRight) {
             txt =
               "Well done! Let's go to the right anchor. I'm sure you will find the shortcut!";
+            instruction = "Pinch to pick me up.";
+
             detectPinch(hand);
             if (detectPinch(hand)) {
               imageMode(CENTER);
@@ -802,7 +1053,8 @@ function draw() {
           }
         }
 
-        if (diagonalRight & !moveToBottomAnchor) {
+        if (diagonalRight && !moveToBottomAnchor) {
+          // console.log("diagonalRight:", diagonalRight);
           if (hands.length > 0) {
             for (let hand of hands) {
               if (hand.handedness == domHand) {
@@ -815,9 +1067,79 @@ function draw() {
           }
           if (!detectBendingIndexFinger(hand)) {
             txt = "Gotta keep the thread goin'";
+            instruction = "Bend index finger to shoot a thread.";
+            if (domHand === "Right") {
+              console.log("1051");
+              image(
+                bending_index_figer_left,
+                window.innerWidth * 0.255,
+                window.innerHeight * 0.925,
+                100,
+                100
+              );
+              image(
+                pinch_right,
+                window.innerWidth * 0.295,
+                window.innerHeight * 0.925,
+                100,
+                100
+              );
+            }
+            if (domHand === "Left") {
+              // console.log(domHand, "left");
+              image(
+                bending_index_figer_right,
+                window.innerWidth * 0.295,
+                window.innerHeight * 0.925,
+                100,
+                100
+              );
+              image(
+                pinch_left,
+                window.innerWidth * 0.255,
+                window.innerHeight * 0.925,
+                100,
+                100
+              );
+            }
           } else {
             txt =
               "Well done! Now shoot another thread and drag it to the bottom anchor.";
+            instruction =
+              "Pinch to pick me up. Bend index finger to shoot a thread.";
+            if (domHand === "Right") {
+              image(
+                bending_index_figer_left,
+                window.innerWidth * 0.255,
+                window.innerHeight * 0.925,
+                100,
+                100
+              );
+              image(
+                pinch_right,
+                window.innerWidth * 0.295,
+                window.innerHeight * 0.925,
+                100,
+                100
+              );
+            }
+            if (domHand === "Left") {
+              // console.log(domHand, "left");
+              image(
+                bending_index_figer_right,
+                window.innerWidth * 0.295,
+                window.innerHeight * 0.925,
+                100,
+                100
+              );
+              image(
+                pinch_left,
+                window.innerWidth * 0.255,
+                window.innerHeight * 0.925,
+                100,
+                100
+              );
+            }
           }
           m =
             ((158 / 874) * window.innerHeight -
@@ -954,14 +1276,18 @@ function draw() {
               (670 / 874) * window.innerHeight
             );
             pop();
-            txt = "I'm proud of myself for making this far.";
+            txt = "I'm proud of us for making this far.";
+            instruction = " ";
+
             if (!secondTextBlock3) {
               previousMillis = millis();
               secondTextBlock3 = true;
             } else {
-              if (millis() - previousMillis >= 2000) {
+              if (millis() - previousMillis >= 2500) {
                 txt =
                   "To provide more stability to the web, let's add more threads to the center of the web";
+                instruction =
+                  "Pinch to pick me up. Bend index finger to shoot a thread.";
                 dying = true;
                 spiderMoved = false;
               }
@@ -969,8 +1295,77 @@ function draw() {
           } else {
             if (!detectBendingIndexFinger(hand)) {
               txt = "Gotta keep the thread goin'";
+              instruction = "Bend index finger to shoot a thread.";
+              if (domHand === "Right") {
+                console.log("1279");
+                image(
+                  bending_index_figer_left,
+                  window.innerWidth * 0.255,
+                  window.innerHeight * 0.925,
+                  100,
+                  100
+                );
+                image(
+                  pinch_right,
+                  window.innerWidth * 0.295,
+                  window.innerHeight * 0.925,
+                  100,
+                  100
+                );
+              }
+              if (domHand === "Left") {
+                // console.log(domHand, "left");
+                image(
+                  bending_index_figer_right,
+                  window.innerWidth * 0.295,
+                  window.innerHeight * 0.925,
+                  100,
+                  100
+                );
+                image(
+                  pinch_left,
+                  window.innerWidth * 0.255,
+                  window.innerHeight * 0.925,
+                  100,
+                  100
+                );
+              }
             } else {
               txt = "You are getting so close to the bottom anchor!";
+              instruction =
+                "Pinch to pick me up. Bend index finger to shoot a thread.";
+              if (domHand === "Right") {
+                image(
+                  bending_index_figer_left,
+                  window.innerWidth * 0.255,
+                  window.innerHeight * 0.925,
+                  100,
+                  100
+                );
+                image(
+                  pinch_right,
+                  window.innerWidth * 0.295,
+                  window.innerHeight * 0.925,
+                  100,
+                  100
+                );
+              }
+              if (domHand === "Left") {
+                image(
+                  bending_index_figer_right,
+                  window.innerWidth * 0.295,
+                  window.innerHeight * 0.925,
+                  100,
+                  100
+                );
+                image(
+                  pinch_left,
+                  window.innerWidth * 0.255,
+                  window.innerHeight * 0.925,
+                  100,
+                  100
+                );
+              }
             }
             if (detectPinch(hand)) {
               imageMode(CENTER);
@@ -1046,6 +1441,7 @@ function draw() {
         }
 
         if (dying) {
+          // console.log(stuck, domHand);
           //right + left thread
           push();
           strokeWeight(1);
@@ -1064,7 +1460,7 @@ function draw() {
           );
           pop();
           detectPinch(hand);
-          console.log(detectPinch(hand));
+          // console.log(detectPinch(hand));
           if (!spiderMoved) {
             spider.x = window.innerWidth / 2;
             spider.y = (670 / 874) * window.innerHeight;
@@ -1095,10 +1491,65 @@ function draw() {
               spider.y > (158 / 874) * window.innerHeight + heavedLength + 5 &&
               !stuck
             ) {
+              // console.log(stuck, domHand);
               //if not at center
               txt = "Why am I crawling this slowly?";
+              instruction =
+                "Pinch to pick me up. Bend index finger to shoot a thread.";
+              if (domHand === "Right") {
+                image(
+                  pinch_right,
+                  window.innerWidth * 0.295,
+                  window.innerHeight * 0.925,
+                  100,
+                  100
+                );
+                image(
+                  bending_index_figer_left,
+                  window.innerWidth * 0.255,
+                  window.innerHeight * 0.925,
+                  100,
+                  100
+                );
+              } else if (domHand === "Left") {
+                image(
+                  pinch_left,
+                  window.innerWidth * 0.255,
+                  window.innerHeight * 0.925,
+                  100,
+                  100
+                );
+                image(
+                  bending_index_figer_right,
+                  window.innerWidth * 0.295,
+                  window.innerHeight * 0.925,
+                  100,
+                  100
+                );
+              }
+
               if (!detectBendingIndexFinger(hand)) {
-                txt = "Gotta keep the thread goin'";
+                console.log("1511");
+                //txt = "Gotta keep the thread goin'";
+                //console.log("Right, need to shoot thread");
+                instruction = "BEND YOUR INDEX FINGER!!!";
+                if (domHand === "Right") {
+                  image(
+                    pinch_right,
+                    window.innerWidth * 0.295,
+                    window.innerHeight * 0.925,
+                    100,
+                    100
+                  );
+                } else if (domHand === "Left") {
+                  image(
+                    pinch_left,
+                    window.innerWidth * 0.255,
+                    window.innerHeight * 0.925,
+                    100,
+                    100
+                  );
+                }
               }
               if (!secondTextBlock4) {
                 previousMillis = millis();
@@ -1106,6 +1557,14 @@ function draw() {
               } else {
                 if (millis() - previousMillis >= 2000) {
                   txt = "I have to try harder.";
+                  instruction =
+                    "Pinch to pick me up. Bend index finger to shoot a thread.";
+                  if (!detectBendingIndexFinger(hand)) {
+                    console.log("1542");
+                    //txt = "Gotta keep the thread goin'";
+                    instruction = "BEND YOUR INDEX FINGER!!!!";
+                    // i dont know why its not working
+                  }
                 }
               }
               if (detectPinch(hand)) {
@@ -1203,6 +1662,7 @@ function draw() {
                 )
               );
               txt = "I'm stuck in my own web.";
+              instruction = " ";
               if (!secondTextBlock5) {
                 previousMillis = millis();
                 secondTextBlock5 = true;
@@ -1227,7 +1687,7 @@ function draw() {
                   txt =
                     "There is no point in trying. I'm going to rot and die alone on this web.";
                 }
-                if (millis() - previousMillis >= 12000) {
+                if (millis() - previousMillis >= 15000) {
                   if (
                     detectBendingIndexFinger(hand) == false &&
                     detectCellphonePose(hand) == false &&
@@ -1280,26 +1740,24 @@ function draw() {
       rectMode(CENTER);
       text(
         txt,
-        (280 / 1710) * window.innerWidth + window.innerWidth * 0.31,
-        (73 / 874) * window.innerHeight,
-        window.innerWidth * 0.62
+        window.innerWidth * 0.15,
+        window.innerHeight * 0.5,
+        window.innerWidth * 0.25
       );
+      push();
+      textAlign(LEFT);
+      rectMode(CENTER);
+      textSize(Math.max((15 / 874) * window.innerHeight, 15));
+      text(
+        instruction,
+        window.innerWidth * 0.15,
+        window.innerHeight * 0.95,
+        window.innerWidth * 0.25
+      );
+      pop();
       break;
     case 3:
-      background(0);
-    // txt = "Blink to see more clearly.";
-    // stroke(255);
-    // strokeWeight(0.1);
-    // textAlign(LEFT);
-    // textFont(BalooThambi2);
-    // textSize(Math.max((25 / 874) * window.innerHeight, 15));
-    // rectMode(CENTER);
-    // text(
-    //   txt,
-    //   window.innerWidth / 2,
-    //   window.innerHeight / 2,
-    //   (window.innerWidth * 3) / 4
-    // );
+      background(195, 38, 45);
   }
 }
 
@@ -1379,11 +1837,19 @@ class Spider {
 function webTouched() {
   if (hands.length > 0) {
     for (let hand of hands) {
-      noStroke();
-      fill(0, 0, 0);
-      circle(hand.index_finger_tip.x, hand.index_finger_tip.y, 5);
+      // noStroke();
+      // fill(0, 0, 0);
+      // circle(hand.index_finger_tip.x, hand.index_finger_tip.y, 5);
+      imageMode(CENTER);
+      image(
+        index_finger,
+        hand.index_finger_tip.x,
+        hand.index_finger_tip.y,
+        250,
+        250
+      );
       domHand = hand.handedness;
-      if (domHand == "Right") {
+      if (domHand === "Right") {
         nonDomHand = "Left";
       } else {
         nonDomHand = "Right";
@@ -1420,10 +1886,18 @@ function webTouched() {
 function spiderTouched() {
   if (hands.length > 0) {
     for (let hand of hands) {
-      noStroke();
-      fill(0, 0, 0);
-      circle(hand.index_finger_tip.x, hand.index_finger_tip.y, 5);
-      if (domHand == hand.handedness) {
+      // noStroke();
+      // fill(0, 0, 0);
+      // circle(hand.index_finger_tip.x, hand.index_finger_tip.y, 5);
+      imageMode(CENTER);
+      image(
+        index_finger,
+        hand.index_finger_tip.x,
+        hand.index_finger_tip.y,
+        250,
+        250
+      );
+      if (domHand === hand.handedness) {
         let index = hand.index_finger_tip;
         if (
           index.x >= 181 &&
@@ -1444,11 +1918,20 @@ function spiderTouched() {
 function detectPinch(hand) {
   if (hands.length > 0) {
     for (let hand of hands) {
-      if (domHand == hand.handedness) {
-        noStroke();
-        fill(0, 0, 0);
-        circle(hand.index_finger_tip.x, hand.index_finger_tip.y, 5);
-        circle(hand.thumb_tip.x, hand.thumb_tip.y, 5);
+      if (domHand === hand.handedness) {
+        // noStroke();
+        // fill(0, 0, 0);
+        // circle(hand.index_finger_tip.x, hand.index_finger_tip.y, 5);
+        // circle(hand.thumb_tip.x, hand.thumb_tip.y, 5);
+        imageMode(CENTER);
+        image(
+          index_finger,
+          hand.index_finger_tip.x,
+          hand.index_finger_tip.y,
+          250,
+          250
+        );
+        image(thumb, hand.thumb_tip.x, hand.thumb_tip.y, 250, 250);
         let d = dist(
           hand.index_finger_tip.x,
           hand.index_finger_tip.y,
@@ -1469,16 +1952,10 @@ function detectPinch(hand) {
         );
         if (d <= 65 && (distToIndex <= 65 || distToThumb <= 65)) {
           let currentTime = millis();
-          console.log(
-            currentTime,
-            lastUpdateTime,
-            currentTime - lastUpdateTime
-          );
           // console.log(
-          //   moveToLeftAnchor,
-          //   moveToBottomAnchor,
-          //   diagonalRight,
-          //   detectBendingIndexFinger(hand)
+          //   currentTime,
+          //   lastUpdateTime,
+          //   currentTime - lastUpdateTime
           // );
           if (!dying || currentTime - lastUpdateTime >= dyingUpdateInterval) {
             if (
@@ -1519,9 +1996,17 @@ function detectBendingIndexFinger(hand) {
   if (hands.length > 0) {
     for (let hand of hands) {
       if (nonDomHand == hand.handedness) {
-        noStroke();
-        fill(0, 0, 0);
-        circle(hand.index_finger_tip.x, hand.index_finger_tip.y, 5);
+        // noStroke();
+        // fill(0, 0, 0);
+        // circle(hand.index_finger_tip.x, hand.index_finger_tip.y, 5);
+        imageMode(CENTER);
+        image(
+          non_dom_hand,
+          hand.index_finger_tip.x,
+          hand.index_finger_tip.y,
+          250,
+          250
+        );
         let d56 = dist(
           hand.index_finger_mcp.x,
           hand.index_finger_mcp.y,
@@ -1559,11 +2044,19 @@ function detectCellphonePose(hand) {
   if (hands.length > 0) {
     for (let hand of hands) {
       if (nonDomHand == hand.handedness) {
-        noStroke();
-        fill(0, 0, 0);
-        circle(hand.index_finger_tip.x, hand.index_finger_tip.y, 5);
-        circle(hand.middle_finger_tip.x, hand.middle_finger_tip.y, 5);
-        circle(hand.ring_finger_tip.x, hand.ring_finger_tip.y, 5);
+        // noStroke();
+        // fill(0, 0, 0);
+        // circle(hand.index_finger_tip.x, hand.index_finger_tip.y, 5);
+        // circle(hand.middle_finger_tip.x, hand.middle_finger_tip.y, 5);
+        // circle(hand.ring_finger_tip.x, hand.ring_finger_tip.y, 5);
+        imageMode(CENTER);
+        image(
+          non_dom_hand,
+          hand.index_finger_tip.x,
+          hand.index_finger_tip.y,
+          250,
+          250
+        );
         let indexDist = dist(
           hand.index_finger_tip.x,
           hand.index_finger_tip.y,
@@ -1603,10 +2096,18 @@ function detectCrossingFingers(hand) {
   if (hands.length > 0) {
     for (let hand of hands) {
       if (nonDomHand == hand.handedness) {
-        noStroke();
-        fill(0, 0, 0);
-        circle(hand.index_finger_tip.x, hand.index_finger_tip.y, 5);
-        circle(hand.middle_finger_tip.x, hand.middle_finger_tip.y, 5);
+        // noStroke();
+        // fill(0, 0, 0);
+        // circle(hand.index_finger_tip.x, hand.index_finger_tip.y, 5);
+        // circle(hand.middle_finger_tip.x, hand.middle_finger_tip.y, 5);
+        imageMode(CENTER);
+        image(
+          non_dom_hand,
+          hand.index_finger_tip.x,
+          hand.index_finger_tip.y,
+          250,
+          250
+        );
         let distance = dist(
           hand.index_finger_tip.x,
           hand.index_finger_tip.y,
