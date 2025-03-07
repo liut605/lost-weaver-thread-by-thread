@@ -195,7 +195,7 @@ function draw() {
         window.innerWidth * 0.25
       );
       push();
-      textSize(Math.max((15 / 874) * window.innerHeight, 15));
+      textSize(Math.max((20 / 874) * window.innerHeight, 15));
       text(
         "Will you pinch your fingers and pick me up?",
         window.innerWidth * 0.15,
@@ -207,18 +207,18 @@ function draw() {
       if (domHand === "Left") {
         image(
           pinch_left,
-          window.innerWidth / 4,
+          window.innerWidth / 3.5,
           (window.innerHeight / 4) * 3,
-          100,
-          100
+          140,
+          140
         );
       } else {
         image(
           pinch_right,
-          window.innerWidth / 4,
+          window.innerWidth / 3.5,
           (window.innerHeight / 4) * 3,
-          100,
-          100
+          140,
+          140
         );
       }
       detectPinch(hand);
@@ -290,19 +290,19 @@ function draw() {
         if (domHand === "Right") {
           image(
             bending_index_figer_left,
-            window.innerWidth * 0.295,
-            window.innerHeight * 0.925,
-            100,
-            100
+            window.innerWidth * 0.05,
+            window.innerHeight * 0.8,
+            140,
+            140
           );
         }
         if (domHand === "Left") {
           image(
             bending_index_figer_right,
-            window.innerWidth * 0.295,
-            window.innerHeight * 0.925,
-            100,
-            100
+            window.innerWidth * 0.05,
+            window.innerHeight * 0.8,
+            140,
+            140
           );
         }
 
@@ -350,19 +350,19 @@ function draw() {
         if (domHand === "Right") {
           image(
             bending_index_figer_left,
-            window.innerWidth * 0.295,
-            window.innerHeight * 0.925,
-            100,
-            100
+            window.innerWidth * 0.05,
+            window.innerHeight * 0.8,
+            140,
+            140
           );
         }
         if (domHand === "Left") {
           image(
             bending_index_figer_right,
-            window.innerWidth * 0.295,
-            window.innerHeight * 0.925,
-            100,
-            100
+            window.innerWidth * 0.05,
+            window.innerHeight * 0.8,
+            140,
+            140
           );
         }
         if (second() % 8 == 0 && threadLength1 <= 0) {
@@ -449,18 +449,18 @@ function draw() {
             if (domHand === "Left") {
               image(
                 pinch_left,
-                window.innerWidth * 0.295,
-                window.innerHeight * 0.925,
-                10,
-                10
+                window.innerWidth * 0.05,
+                window.innerHeight * 0.8,
+                140,
+                140
               );
             } else {
               image(
                 pinch_right,
-                window.innerWidth * 0.295,
-                window.innerHeight * 0.925,
-                100,
-                100
+                window.innerWidth * 0.05,
+                window.innerHeight * 0.8,
+                140,
+                140
               );
             }
             if (detectPinch(hand)) {
@@ -578,19 +578,19 @@ function draw() {
               if (domHand === "Right") {
                 image(
                   bending_index_figer_left,
-                  window.innerWidth * 0.295,
-                  window.innerHeight * 0.925,
-                  100,
-                  100
+                  window.innerWidth * 0.05,
+                  window.innerHeight * 0.8,
+                  140,
+                  140
                 );
               }
               if (domHand === "Left") {
                 image(
                   bending_index_figer_right,
-                  window.innerWidth * 0.295,
-                  window.innerHeight * 0.925,
-                  100,
-                  100
+                  window.innerWidth * 0.05,
+                  window.innerHeight * 0.8,
+                  140,
+                  140
                 );
               }
 
@@ -859,26 +859,26 @@ function draw() {
                 if (moveToRightAnchor) {
                   image(
                     pinch_right,
-                    window.innerWidth * 0.295,
-                    window.innerHeight * 0.925,
-                    100,
-                    100
+                    window.innerWidth * 0.13,
+                    window.innerHeight * 0.8,
+                    140,
+                    140
                   );
                 } else {
                   // console.log("859");
                   image(
                     bending_index_figer_left,
-                    window.innerWidth * 0.255,
-                    window.innerHeight * 0.925,
-                    100,
-                    100
+                    window.innerWidth * 0.05,
+                    window.innerHeight * 0.8,
+                    140,
+                    140
                   );
                   image(
                     pinch_right,
-                    window.innerWidth * 0.295,
-                    window.innerHeight * 0.925,
-                    100,
-                    100
+                    window.innerWidth * 0.13,
+                    window.innerHeight * 0.8,
+                    140,
+                    140
                   );
                 }
               }
@@ -886,25 +886,25 @@ function draw() {
                 if (moveToRightAnchor) {
                   image(
                     pinch_left,
-                    window.innerWidth * 0.255,
-                    window.innerHeight * 0.925,
-                    100,
-                    100
+                    window.innerWidth * 0.05,
+                    window.innerHeight * 0.8,
+                    140,
+                    140
                   );
                 } else {
                   image(
                     bending_index_figer_right,
-                    window.innerWidth * 0.295,
-                    window.innerHeight * 0.925,
-                    100,
-                    100
+                    window.innerWidth * 0.13,
+                    window.innerHeight * 0.8,
+                    140,
+                    140
                   );
                   image(
                     pinch_left,
-                    window.innerWidth * 0.255,
-                    window.innerHeight * 0.925,
-                    100,
-                    100
+                    window.innerWidth * 0.05,
+                    window.innerHeight * 0.8,
+                    140,
+                    140
                   );
                 }
               }
@@ -916,34 +916,34 @@ function draw() {
                 if (domHand === "Right") {
                   image(
                     bending_index_figer_left,
-                    window.innerWidth * 0.255,
-                    window.innerHeight * 0.925,
-                    100,
-                    100
+                    window.innerWidth * 0.05,
+                    window.innerHeight * 0.8,
+                    140,
+                    140
                   );
                   image(
                     pinch_right,
-                    window.innerWidth * 0.295,
-                    window.innerHeight * 0.925,
-                    100,
-                    100
+                    window.innerWidth * 0.13,
+                    window.innerHeight * 0.8,
+                    140,
+                    140
                   );
                 } else if (domHand === "Left") {
                   //an old bug, left display
                   // console.log("left, 700");
                   image(
                     bending_index_figer_right,
-                    window.innerWidth * 0.295,
-                    window.innerHeight * 0.925,
-                    100,
-                    100
+                    window.innerWidth * 0.13,
+                    window.innerHeight * 0.8,
+                    140,
+                    140
                   );
                   image(
                     pinch_left,
-                    window.innerWidth * 0.255,
-                    window.innerHeight * 0.925,
-                    100,
-                    100
+                    window.innerWidth * 0.05,
+                    window.innerHeight * 0.8,
+                    140,
+                    140
                   );
                 }
               }
@@ -956,20 +956,20 @@ function draw() {
             // console.log("right, normal");
             image(
               pinch_right,
-              window.innerWidth * 0.295,
-              window.innerHeight * 0.925,
-              100,
-              100
+              window.innerWidth * 0.13,
+              window.innerHeight * 0.8,
+              140,
+              140
             );
           } else if (domHand === "Left") {
             //an old bug, left display
             // console.log("left, 1000");
             image(
               pinch_left,
-              window.innerWidth * 0.255,
-              window.innerHeight * 0.925,
-              100,
-              100
+              window.innerWidth * 0.05,
+              window.innerHeight * 0.8,
+              140,
+              140
             );
           }
           //unchanged left anchor thread
@@ -1072,34 +1072,34 @@ function draw() {
               console.log("1051");
               image(
                 bending_index_figer_left,
-                window.innerWidth * 0.255,
-                window.innerHeight * 0.925,
-                100,
-                100
+                window.innerWidth * 0.05,
+                window.innerHeight * 0.8,
+                140,
+                140
               );
               image(
                 pinch_right,
-                window.innerWidth * 0.295,
-                window.innerHeight * 0.925,
-                100,
-                100
+                window.innerWidth * 0.13,
+                window.innerHeight * 0.8,
+                140,
+                140
               );
             }
             if (domHand === "Left") {
               // console.log(domHand, "left");
               image(
                 bending_index_figer_right,
-                window.innerWidth * 0.295,
-                window.innerHeight * 0.925,
-                100,
-                100
+                window.innerWidth * 0.13,
+                window.innerHeight * 0.8,
+                140,
+                140
               );
               image(
                 pinch_left,
-                window.innerWidth * 0.255,
-                window.innerHeight * 0.925,
-                100,
-                100
+                window.innerWidth * 0.05,
+                window.innerHeight * 0.8,
+                140,
+                140
               );
             }
           } else {
@@ -1110,34 +1110,34 @@ function draw() {
             if (domHand === "Right") {
               image(
                 bending_index_figer_left,
-                window.innerWidth * 0.255,
-                window.innerHeight * 0.925,
-                100,
-                100
+                window.innerWidth * 0.05,
+                window.innerHeight * 0.8,
+                140,
+                140
               );
               image(
                 pinch_right,
-                window.innerWidth * 0.295,
-                window.innerHeight * 0.925,
-                100,
-                100
+                window.innerWidth * 0.13,
+                window.innerHeight * 0.8,
+                140,
+                140
               );
             }
             if (domHand === "Left") {
               // console.log(domHand, "left");
               image(
                 bending_index_figer_right,
-                window.innerWidth * 0.295,
-                window.innerHeight * 0.925,
-                100,
-                100
+                window.innerWidth * 0.13,
+                window.innerHeight * 0.8,
+                140,
+                140
               );
               image(
                 pinch_left,
-                window.innerWidth * 0.255,
-                window.innerHeight * 0.925,
-                100,
-                100
+                window.innerWidth * 0.05,
+                window.innerHeight * 0.8,
+                140,
+                140
               );
             }
           }
@@ -1300,34 +1300,34 @@ function draw() {
                 console.log("1279");
                 image(
                   bending_index_figer_left,
-                  window.innerWidth * 0.255,
-                  window.innerHeight * 0.925,
-                  100,
-                  100
+                  window.innerWidth * 0.05,
+                  window.innerHeight * 0.8,
+                  140,
+                  140
                 );
                 image(
                   pinch_right,
-                  window.innerWidth * 0.295,
-                  window.innerHeight * 0.925,
-                  100,
-                  100
+                  window.innerWidth * 0.13,
+                  window.innerHeight * 0.8,
+                  140,
+                  140
                 );
               }
               if (domHand === "Left") {
                 // console.log(domHand, "left");
                 image(
                   bending_index_figer_right,
-                  window.innerWidth * 0.295,
-                  window.innerHeight * 0.925,
-                  100,
-                  100
+                  window.innerWidth * 0.13,
+                  window.innerHeight * 0.8,
+                  140,
+                  140
                 );
                 image(
                   pinch_left,
-                  window.innerWidth * 0.255,
-                  window.innerHeight * 0.925,
-                  100,
-                  100
+                  window.innerWidth * 0.05,
+                  window.innerHeight * 0.8,
+                  140,
+                  140
                 );
               }
             } else {
@@ -1337,33 +1337,33 @@ function draw() {
               if (domHand === "Right") {
                 image(
                   bending_index_figer_left,
-                  window.innerWidth * 0.255,
-                  window.innerHeight * 0.925,
-                  100,
-                  100
+                  window.innerWidth * 0.05,
+                  window.innerHeight * 0.8,
+                  140,
+                  140
                 );
                 image(
                   pinch_right,
-                  window.innerWidth * 0.295,
-                  window.innerHeight * 0.925,
-                  100,
-                  100
+                  window.innerWidth * 0.13,
+                  window.innerHeight * 0.8,
+                  140,
+                  140
                 );
               }
               if (domHand === "Left") {
                 image(
                   bending_index_figer_right,
-                  window.innerWidth * 0.295,
-                  window.innerHeight * 0.925,
-                  100,
-                  100
+                  window.innerWidth * 0.13,
+                  window.innerHeight * 0.8,
+                  140,
+                  140
                 );
                 image(
                   pinch_left,
-                  window.innerWidth * 0.255,
-                  window.innerHeight * 0.925,
-                  100,
-                  100
+                  window.innerWidth * 0.05,
+                  window.innerHeight * 0.8,
+                  140,
+                  140
                 );
               }
             }
@@ -1499,32 +1499,32 @@ function draw() {
               if (domHand === "Right") {
                 image(
                   pinch_right,
-                  window.innerWidth * 0.295,
-                  window.innerHeight * 0.925,
-                  100,
-                  100
+                  window.innerWidth * 0.13,
+                  window.innerHeight * 0.8,
+                  140,
+                  140
                 );
                 image(
                   bending_index_figer_left,
-                  window.innerWidth * 0.255,
-                  window.innerHeight * 0.925,
-                  100,
-                  100
+                  window.innerWidth * 0.05,
+                  window.innerHeight * 0.8,
+                  140,
+                  140
                 );
               } else if (domHand === "Left") {
                 image(
                   pinch_left,
-                  window.innerWidth * 0.255,
-                  window.innerHeight * 0.925,
-                  100,
-                  100
+                  window.innerWidth * 0.05,
+                  window.innerHeight * 0.8,
+                  140,
+                  140
                 );
                 image(
                   bending_index_figer_right,
-                  window.innerWidth * 0.295,
-                  window.innerHeight * 0.925,
-                  100,
-                  100
+                  window.innerWidth * 0.13,
+                  window.innerHeight * 0.8,
+                  140,
+                  140
                 );
               }
 
@@ -1536,18 +1536,18 @@ function draw() {
                 if (domHand === "Right") {
                   image(
                     pinch_right,
-                    window.innerWidth * 0.295,
-                    window.innerHeight * 0.925,
-                    100,
-                    100
+                    window.innerWidth * 0.13,
+                    window.innerHeight * 0.8,
+                    140,
+                    140
                   );
                 } else if (domHand === "Left") {
                   image(
                     pinch_left,
-                    window.innerWidth * 0.255,
-                    window.innerHeight * 0.925,
-                    100,
-                    100
+                    window.innerWidth * 0.05,
+                    window.innerHeight * 0.8,
+                    140,
+                    140
                   );
                 }
               }
@@ -1747,11 +1747,11 @@ function draw() {
       push();
       textAlign(LEFT);
       rectMode(CENTER);
-      textSize(Math.max((15 / 874) * window.innerHeight, 15));
+      textSize(Math.max((20 / 874) * window.innerHeight, 15));
       text(
         instruction,
         window.innerWidth * 0.15,
-        window.innerHeight * 0.95,
+        window.innerHeight * 0.92,
         window.innerWidth * 0.25
       );
       pop();
